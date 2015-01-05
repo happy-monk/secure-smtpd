@@ -12,6 +12,7 @@ except ImportError:
     from queue import Empty
 
 class SMTPServer(smtpd.SMTPServer):
+    channel_class = SMTPChannel
 
     def __init__(self, localaddr, remoteaddr, ssl=False, certfile=None, keyfile=None, ssl_version=ssl.PROTOCOL_SSLv23, require_authentication=False, credential_validator=None, maximum_execution_time=30, process_count=5):
         smtpd.SMTPServer.__init__(self, localaddr, remoteaddr)
@@ -54,7 +55,7 @@ class SMTPServer(smtpd.SMTPServer):
                             keyfile=self.keyfile,
                             ssl_version=self.ssl_version,
                         )
-                    channel = SMTPChannel(
+                    channel = self.channel_class(
                         self,
                         newsocket,
                         fromaddr,

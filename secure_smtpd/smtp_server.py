@@ -33,6 +33,7 @@ class SMTPServer(smtpd.SMTPServer):
 
     def _accept_subprocess(self, queue):
         while True:
+            newsocket = None
             try:
                 self.socket.setblocking(1)
                 pair = self.accept()
@@ -75,6 +76,8 @@ class SMTPServer(smtpd.SMTPServer):
                 self.logger.error('_accept_subprocess(): uncaught exception: %s' % str(e))
 
     def _shutdown_socket(self, s):
+        if not s:
+            return
         try:
             s.shutdown(socket.SHUT_RDWR)
             s.close()
